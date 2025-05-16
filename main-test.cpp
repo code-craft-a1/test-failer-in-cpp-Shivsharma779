@@ -5,6 +5,7 @@ void testPrintColorMap();
 void testWeatherReport();
 void testIndexOf();
 void testGetColorPairString();
+void testRainyReport();
 
 TEST(TShirt, Size) {
     testTshirtSize();
@@ -24,4 +25,8 @@ TEST(ColorMap, GetColorPairString) {
 
 TEST(WeatherReport, Report) {
     testWeatherReport();
+}
+
+TEST(WeatherReport, Rainy) {
+    testRainyReport();
 }
