@@ -1,6 +1,6 @@
 #include <string>
 #include <iostream>
-#include <assert.h>
+#include <gtest/gtest.h>
 
 using namespace std;
 
@@ -46,6 +46,10 @@ namespace WeatherSpace
         {
             if (precipitation >= 20 && precipitation < 60)
                 report = "Partly Cloudy";
+            else if (precipitation >= 60)
+                report = "rainy";
+            else if (precipitation < 20)
+                report = "Sunny";
             else if (sensor.WindSpeedKMPH() > 50)
                 report = "Alert, Stormy with heavy rain";
         }
@@ -57,7 +61,7 @@ namespace WeatherSpace
         SensorStub sensor;
         string report = Report(sensor);
         cout << report << endl;
-        assert(report.find("rain") != string::npos);
+        EXPECT_TRUE(report.find("rain") != string::npos);
     }
 
     void TestHighPrecipitation()
@@ -69,7 +73,22 @@ namespace WeatherSpace
         // strengthen the assert to expose the bug
         // (function returns Sunny day, it should predict rain)
         string report = Report(sensor);
-        assert(report.length() > 0);
+        EXPECT_GT(report.length(), 0);
+    }
+
+    class SensorHighPrecipLowWindStub : public IWeatherSensor {
+        int Humidity() const override { return 80; }
+        int Precipitation() const override { return 75; }    // high precipitation > 60
+        double TemperatureInC() const override { return 26; }
+        int WindSpeedKMPH() const override { return 45; }    // low wind speed <= 50
+    };
+
+    void TestHighPrecipLowWind()
+    {
+        SensorHighPrecipLowWindStub sensor;
+        string report = Report(sensor);
+        cout << "Report for high precip, low wind: " << report << endl;
+        EXPECT_NE(report.find("rain") , string::npos) << "Expected 'rain' in report, got: " << report;
     }
 }
 
@@ -79,3 +98,9 @@ void testWeatherReport() {
     WeatherSpace::TestHighPrecipitation();
     cout << "All is well (maybe)\n";
 }
+
+void testRainyReport() {
+    cout << "\nWeather report test\n";
+    WeatherSpace::TestHighPrecipLowWind();
+}
+
