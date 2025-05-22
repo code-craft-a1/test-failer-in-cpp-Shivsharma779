@@ -46,6 +46,10 @@ namespace WeatherSpace
         {
             if (precipitation >= 20 && precipitation < 60)
                 report = "Partly Cloudy";
+            else if (precipitation >= 60)
+                report = "rainy";
+            else if (precipitation < 20)
+                report = "Sunny";
             else if (sensor.WindSpeedKMPH() > 50)
                 report = "Alert, Stormy with heavy rain";
         }
@@ -57,7 +61,7 @@ namespace WeatherSpace
         SensorStub sensor;
         string report = Report(sensor);
         cout << report << endl;
-        EXPECT_NE(report.find("rain"), string::npos);
+        EXPECT_TRUE(report.find("rain") != string::npos);
     }
 
     void TestHighPrecipitation()
@@ -99,3 +103,4 @@ void testRainyReport() {
     cout << "\nWeather report test\n";
     WeatherSpace::TestHighPrecipLowWind();
 }
+

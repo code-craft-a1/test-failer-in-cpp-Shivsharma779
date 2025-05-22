@@ -23,3 +23,5 @@ target_link_libraries(
 )
 include(GoogleTest)
 gtest_discover_tests(strong_tests)
+add_compile_definitions(DEBUG=1)
+
